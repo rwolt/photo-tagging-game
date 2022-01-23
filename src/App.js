@@ -1,23 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
+import planetiso from './images/planetiso.png';
 
 function App() {
+  let [pageX, setPageX] = useState(0);
+  let [pageY, setPageY] = useState(0);
+
+  const updateDisplay = (e) => {
+    setPageX(Math.round((e.nativeEvent.offsetX / document.querySelector('.planet').clientWidth) * 100));
+    setPageY(Math.round((e.nativeEvent.offsetY / document.querySelector('.planet').clientHeight) * 100));
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p className='screenlog'>
+        Page X/Y: {pageX}%, {pageY}%
+      </p>
+      <img onClick={updateDisplay} className="planet" src={planetiso} />
     </div>
   );
 }
