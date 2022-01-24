@@ -9,10 +9,12 @@ function App() {
   const [currentLevel, setCurrentLevel] = useState({name: ''});
   let [pageX, setPageX] = useState(0);
   let [pageY, setPageY] = useState(0);
+  const [showTargetBox, setShowTargetBox] = useState(false);
 
   const updateCoords = (e) => {
-    setPageX(Math.round((e.nativeEvent.offsetX / document.querySelector('.level-image').clientWidth) * 100));
-    setPageY(Math.round((e.nativeEvent.offsetY / document.querySelector('.level-image').clientHeight) * 100));
+    setPageX(((e.nativeEvent.offsetX / document.querySelector('.map').clientWidth) * 100).toFixed(2));
+    setPageY(((e.nativeEvent.offsetY / document.querySelector('.map').clientHeight) * 100).toFixed(2));
+    setShowTargetBox(!showTargetBox);
   }
   
   const getLevel = (e) => {
@@ -34,6 +36,9 @@ function App() {
       <Map 
         level={currentLevel}
         updateCoords={updateCoords}
+        pageX={pageX}
+        pageY={pageY}
+        showTargetBox={showTargetBox}
       />
     </div>
   );

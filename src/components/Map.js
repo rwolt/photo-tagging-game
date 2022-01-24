@@ -2,6 +2,7 @@ import '../styles/Map.css';
 import planetiso from '../images/planetiso.png';
 import prehisoria from '../images/prehisoria.png';
 import isorcery from '../images/isorcery.png';
+import TargetBox from './TargetBox';
 
 const Map = (props) => {
 
@@ -27,6 +28,12 @@ const Map = (props) => {
                 src={levelImage} 
                 onClick={props.updateCoords} 
             />
+            {props.showTargetBox ? 
+                <TargetBox
+                    pageX={props.pageX}
+                    pageY={props.pageY}
+                /> : ''
+            } 
         </div>
     )
 }
