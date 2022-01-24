@@ -1,7 +1,32 @@
+import '../styles/Map.css';
+import planetiso from '../images/planetiso.png';
+import prehisoria from '../images/prehisoria.png';
+import isorcery from '../images/isorcery.png';
+
 const Map = (props) => {
-    return(
+
+    let levelImage = '';
+    switch (props.level.name) {
+        case 'planetiso': 
+            levelImage = planetiso;
+            break;
+        case 'prehisoria':
+            levelImage = prehisoria;
+            break;
+        case 'isorcery':
+            levelImage = isorcery;
+            break;
+        default: 
+            levelImage = '';
+    }
+
+        return(
         <div className='map'>
-            <img src={props.currentMap} />
+            <img 
+                className='level-image' 
+                src={levelImage} 
+                onClick={props.updateCoords} 
+            />
         </div>
     )
 }
