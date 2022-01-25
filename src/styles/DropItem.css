@@ -1,0 +1,17 @@
+.drop-item {
+    padding: 2px 4px; 
+    width: 100%; 
+    font-size: 14px;
+    background-color: white;
+    color: #333;
+    border-bottom: 2px solid #333;
+}
+
+.drop-item:last-child {
+    border-bottom: none;
+}
+
+
+.drop-item:hover {
+    background: #a5a5a5;
+}

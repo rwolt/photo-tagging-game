@@ -3,6 +3,7 @@ import planetiso from '../images/planetiso.png';
 import prehisoria from '../images/prehisoria.png';
 import isorcery from '../images/isorcery.png';
 import TargetBox from './TargetBox';
+import DropMenu from './DropMenu';
 
 const Map = (props) => {
 
@@ -30,6 +31,13 @@ const Map = (props) => {
             />
             {props.showTargetBox ? 
                 <TargetBox
+                    pageX={props.pageX}
+                    pageY={props.pageY}
+                /> : ''
+            }
+            {props.showTargetBox ? 
+                <DropMenu   
+                    characters={props.characters}
                     pageX={props.pageX}
                     pageY={props.pageY}
                 /> : ''

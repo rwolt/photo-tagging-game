@@ -1,0 +1,13 @@
+.drop-menu {
+    position: absolute;
+    width: 5vw;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 2px solid #333;
+    border-radius: 3px;
+}    
+
+.drop-menu:hover {
+    cursor: pointer;
+}

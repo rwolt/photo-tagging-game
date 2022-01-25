@@ -7,9 +7,12 @@ import { useState } from 'react';
 function App() {
   const [showLevelSelect, setShowLevelSelect] = useState(true);
   const [currentLevel, setCurrentLevel] = useState({name: ''});
-  let [pageX, setPageX] = useState(0);
-  let [pageY, setPageY] = useState(0);
+  //X and Y Coordinates for center of the targeting box
+  const [pageX, setPageX] = useState(0);
+  const [pageY, setPageY] = useState(0);
   const [showTargetBox, setShowTargetBox] = useState(false);
+  //Mock data for the characters array
+  const [characters, setCharacters] = useState([{name: 'Spock', found: false}, {name: 'Master Chief', found: false}, {name: 'Claptrap', found: false}]);
 
   const updateCoords = (e) => {
     setPageX(((e.nativeEvent.offsetX / document.querySelector('.map').clientWidth) * 100).toFixed(2));
@@ -35,6 +38,7 @@ function App() {
         /> : ''}
       <Map 
         level={currentLevel}
+        characters={characters}
         updateCoords={updateCoords}
         pageX={pageX}
         pageY={pageY}

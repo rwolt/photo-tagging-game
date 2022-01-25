@@ -1,4 +1,5 @@
 import '../styles/TargetBox.css';
+import DropMenu from './DropMenu';
 
 const TargetBox = (props) => {
     const style = {
@@ -7,7 +8,7 @@ const TargetBox = (props) => {
     }
 
    return(
-       <div className='target-box' style={style}></div>
+        <div className='target-box' style={style}></div>
    ) 
 }
 
