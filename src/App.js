@@ -11,8 +11,9 @@ function App() {
   const [pageX, setPageX] = useState(0);
   const [pageY, setPageY] = useState(0);
   const [showTargetBox, setShowTargetBox] = useState(false);
+  const [showKey, setShowKey] = useState(false);
   //Mock data for the characters array
-  const [characters, setCharacters] = useState([{name: 'Spock', found: false}, {name: 'Master Chief', found: false}, {name: 'Claptrap', found: false}]);
+  const [characters, setCharacters] = useState([{name: 'Spock', found: true}, {name: 'Master Chief', found: false}, {name: 'Claptrap', found: false}]);
 
   const updateCoords = (e) => {
     setPageX(((e.nativeEvent.offsetX / document.querySelector('.map').clientWidth) * 100).toFixed(2));
@@ -31,7 +32,13 @@ function App() {
   return (
     //Show the start menu if levelSelect is true
     <div className="App">
-      <Header pageX={pageX} pageY={pageY}/>
+      <Header 
+        pageX={pageX} 
+        pageY={pageY}
+        showKey={showKey}
+        setShowKey={setShowKey}
+        characters={characters}
+      />
       {showLevelSelect ? 
         <StartMenu
           getLevel={getLevel}

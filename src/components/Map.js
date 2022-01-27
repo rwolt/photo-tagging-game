@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import '../styles/Map.css';
 import planetiso from '../images/planetiso.png';
 import prehisoria from '../images/prehisoria.png';

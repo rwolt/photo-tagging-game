@@ -12,3 +12,9 @@
     z-index: 1;
 }
 
+#coords {
+    position: fixed;
+    left: 3px;
+    top: 3px;
+    font-size: 12px;
+}
