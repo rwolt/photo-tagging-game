@@ -4,6 +4,8 @@ import Header from './components/Header';
 import Map from './components/Map';
 import { useState } from 'react';
 
+import {claptrap, masterchief, spock} from './images/index.js';
+
 function App() {
   const [showLevelSelect, setShowLevelSelect] = useState(true);
   const [currentLevel, setCurrentLevel] = useState({name: ''});
@@ -13,7 +15,7 @@ function App() {
   const [showTargetBox, setShowTargetBox] = useState(false);
   const [showKey, setShowKey] = useState(false);
   //Mock data for the characters array
-  const [characters, setCharacters] = useState([{name: 'Spock', found: true}, {name: 'Master Chief', found: false}, {name: 'Claptrap', found: false}]);
+  const [characters, setCharacters] = useState([{name: 'Spock', image: spock, found: true}, {name: 'Master Chief', image: masterchief, found: false}, {name: 'Claptrap', image: claptrap, found: false}]);
 
   const updateCoords = (e) => {
     setPageX(((e.nativeEvent.offsetX / document.querySelector('.map').clientWidth) * 100).toFixed(2));

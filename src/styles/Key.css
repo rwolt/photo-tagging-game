@@ -1,7 +1,7 @@
 .dropdown {
     display: inline-block;
     position: absolute;
-    right: calc(5vw + 50px);
+    right: calc(3vw + 46px);
     top: 25px;
     padding: 0;
 }

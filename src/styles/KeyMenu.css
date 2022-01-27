@@ -1,4 +1,7 @@
 .key-menu {
     list-style-type: none;
     margin-top: 50px;
+    border: 2px solid #333;
+    padding: 0;
+    border-radius: 3px;
 }
