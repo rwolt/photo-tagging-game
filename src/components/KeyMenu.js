@@ -8,9 +8,9 @@ const KeyMenu = (props) => {
             {props.characters.map((character) => {
                 return(
                 (character.found === false) ?
-                    <KeyItem character={character} className="key-found" /> :
+                    <KeyItem key={character.id} character={character} className="key-found" /> :
                  
-                    <KeyItem character={character} />
+                    <KeyItem key={character.id} character={character} />
                 );
             })}
         </ul>

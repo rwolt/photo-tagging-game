@@ -18,6 +18,7 @@
     position: fixed;
     top: 25px;
     right: 15vw;
+    border-radius: 3px;
 }
 
 .key:hover {
