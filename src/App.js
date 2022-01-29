@@ -26,6 +26,16 @@ function App() {
     setPageY(((e.nativeEvent.offsetY / document.querySelector('.map').clientHeight) * 100).toFixed(2));
     setShowTargetBox(!showTargetBox);
   }
+  
+  const checkOverlap = (el1, el2) => {
+    const rect1 = el1.getBoundingClientRect();
+    const rect2 = el2.getBoundingClientRect();
+    const overlap = !(rect1.left > rect2.right ||
+                      rect1.right < rect1.left ||
+                      rect1.bottom < rect2.top ||
+                      rect1.top > rect2.bottom);
+      return overlap;
+  }
  
   const getLevel = async (e) => {
     const {id} = e.target;
