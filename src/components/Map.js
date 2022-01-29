@@ -12,7 +12,10 @@ const Map = (props) => {
                 src={props.level.imageURL} 
                 onClick={props.updateCoords} 
             />
-            <CharacterTargets characters={props.characters}/>
+            {props.showCharacterTargets ? 
+                <CharacterTargets characters={props.characters}/> 
+                : ''
+            }
             {props.showTargetBox ? 
                 <TargetBox
                     pageX={props.pageX}
@@ -22,6 +25,7 @@ const Map = (props) => {
             {props.showTargetBox ? 
                 <DropMenu   
                     characters={props.characters}
+                    handleSelect={props.handleSelect}
                     pageX={props.pageX}
                     pageY={props.pageY}
                 /> : ''

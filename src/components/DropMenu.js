@@ -13,7 +13,11 @@ const DropMenu = (props) => {
                 {props.characters.filter(character => character.found === false)
                     .map(character => {
                         return(
-                            <DropItem name={character.name} />   
+                            <DropItem 
+                                key={character.id} 
+                                character={character} 
+                                handleSelect={props.handleSelect}
+                            />   
                         )
                     }
                 )}

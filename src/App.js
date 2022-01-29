@@ -2,12 +2,10 @@ import './App.css';
 import StartMenu from './components/StartMenu';
 import Header from './components/Header';
 import Map from './components/Map';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { getDocs, query, where, collection } from 'firebase/firestore';
 import {db, storage} from './utils/firebase';
-
-import {claptrap, masterchief, spock} from './images/index.js';
 
 function App() {
   const [showLevelSelect, setShowLevelSelect] = useState(true);
@@ -16,10 +14,34 @@ function App() {
   const [pageX, setPageX] = useState(0);
   const [pageY, setPageY] = useState(0);
   const [showTargetBox, setShowTargetBox] = useState(false);
+  const [showCharacterTargets, setShowCharacterTargets] = useState(false);
   const [showKey, setShowKey] = useState(false);
   //Mock data for the characters array
+  const [currentCharacter, setCurrentCharacter] = useState('');
+  const [characterTarget, setCharacterTarget] = useState({});
   const [characters, setCharacters] = useState([]);
-  // const [startTime, setStartTime] = useState(0);
+
+  useEffect(() => {
+    //If there a character is currently being validated, show or hide the character target divs 
+    if(currentCharacter !== '') {
+      setShowCharacterTargets(true);
+    } else {
+      setShowCharacterTargets(false);
+    }
+  }, [currentCharacter])
+  
+  useEffect(() => {
+    if(showCharacterTargets === true) {
+      //Get the bounding rectangle of the selection box and the character box
+      const targetBox = document.querySelector('.target-box').getBoundingClientRect();
+      console.log(currentCharacter);
+      const charTarget = document.getElementById(`${currentCharacter} target`).getBoundingClientRect();
+      //Check to see if the two divs overlap
+      console.log(checkOverlap(targetBox, charTarget));
+      //Set the current character to an empty string to hide the character targets
+      setCurrentCharacter('');
+    }
+  }, [showCharacterTargets])
 
   const updateCoords = (e) => {
     setPageX(((e.nativeEvent.offsetX / document.querySelector('.map').clientWidth) * 100).toFixed(2));
@@ -27,14 +49,17 @@ function App() {
     setShowTargetBox(!showTargetBox);
   }
   
-  const checkOverlap = (el1, el2) => {
-    const rect1 = el1.getBoundingClientRect();
-    const rect2 = el2.getBoundingClientRect();
+  const handleSelect = (e) => {
+    const {id} = e.currentTarget;  
+    setCurrentCharacter(id);
+  }
+
+  const checkOverlap = (rect1, rect2) => {
     const overlap = !(rect1.left > rect2.right ||
-                      rect1.right < rect1.left ||
+                      rect1.right < rect2.left ||
                       rect1.bottom < rect2.top ||
                       rect1.top > rect2.bottom);
-      return overlap;
+    return overlap;
   }
  
   const getLevel = async (e) => {
@@ -56,10 +81,13 @@ function App() {
   }
 
   const getCharacters = async (name) => {
+    //Fetch character docs for the current level from firebase
     const q = query(collection(db, 'characters'), where('level', '==', name));
     const charArray = [];
     const querySnapshot = await getDocs(q);
+    //Map over the returned docs and add a found and id property
     querySnapshot.forEach(doc => charArray.push({...doc.data(), found: false, id: doc.id}));
+    //Get the download url for each characters avatar from cloud storage
     charArray.forEach(char => {
       const imageRef = ref(storage, char.imageURL);
       getDownloadURL(imageRef).then(url => {
@@ -69,7 +97,6 @@ function App() {
     });
   }
  
-
     return(
     //Show the start menu if levelSelect is true
     <div className="App">
@@ -91,6 +118,8 @@ function App() {
         pageX={pageX}
         pageY={pageY}
         showTargetBox={showTargetBox}
+        showCharacterTargets={showCharacterTargets}
+        handleSelect={handleSelect}
       />}
     </div>
   );

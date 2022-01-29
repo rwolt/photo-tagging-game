@@ -11,7 +11,11 @@ const CharacterTargets = (props) => {
                     border: '2px solid hotpink'
                 }
                 return(
-                    <div className={character.name} style={style} />
+                    <div 
+                        key={character.id} 
+                        id={`${character.name} target`} 
+                        style={style} 
+                    />
                 )
             })    
     )
