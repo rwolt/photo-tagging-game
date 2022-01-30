@@ -1,10 +1,10 @@
-import './App.css';
+
 import StartMenu from './components/StartMenu';
 import Header from './components/Header';
 import Map from './components/Map';
 import { useEffect, useState } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { getDocs, query, where, collection } from 'firebase/firestore';
+import { getDocs, query, where, collection, getDoc, doc } from 'firebase/firestore';
 import {db, storage} from './utils/firebase';
 
 function App() {
@@ -40,12 +40,19 @@ function App() {
       if(checkOverlap(targetBox, charTarget)) {
         setCharacters(characters.map(char => {
           return(
-            char.name === currentCharacter ? {...char, found: true} : 
+            char.name === currentCharacter ? {...char, found: true, targetbox: {}} : 
             {...char}
           );
         }))  
         handleSnackbar({text: `You found ${currentCharacter}`, isCorrect: true});
       } else {
+        //Remove the position from state
+        setCharacters(characters.map(char => {
+          return(
+            char.name=== currentCharacter ? {...char, targetbox: {}} : 
+            {...char}
+          )
+        }))
         handleSnackbar({text: `Try again`, isCorrect: false});
       };
       //Set the current character to an empty string to hide the character targets
@@ -54,14 +61,28 @@ function App() {
     }
   }, [showCharacterTargets])
 
+  useEffect(() => {
+    //If every character has been found, end the game
+    if(characters.every(char => char.found === true)){
+      gameEnd();
+    }
+  }, [characters]) 
+
   const updateCoords = (e) => {
     setPageX(((e.nativeEvent.offsetX / document.querySelector('.map').clientWidth) * 100).toFixed(2));
     setPageY(((e.nativeEvent.offsetY / document.querySelector('.map').clientHeight) * 100).toFixed(2));
     setShowTargetBox(!showTargetBox);
   }
   
-  const handleSelect = (e) => {
+  const handleSelect = async (e) => {
     const {id} = e.currentTarget;  
+    const uniqueId = characters.filter(char => char.name === id)[0].id;
+    //Get the coordinates of the character from firebase
+    const characterRef = doc(collection(db, 'characters'), uniqueId);
+    //Store the coordinates in state
+    const characterSnap = await getDoc(characterRef).then(doc => {
+      setCharacters(characters.map(char => char.id === doc.id ? {...char, targetbox: doc.data().targetbox} : {...char}));
+    }) 
     setCurrentCharacter(id);
   }
 
@@ -72,6 +93,7 @@ function App() {
     setTimeout(() => {
       setShowSnackbar(false)
     }, 2000);
+    //Delay change of message so style remains during animation
     setTimeout(() => {
       setMessage({});
     }, 2400);
@@ -84,7 +106,14 @@ function App() {
                       rect1.top > rect2.bottom);
     return overlap;
   }
- 
+  
+  const gameEnd = () => {
+    //Stop the timer
+    //Show score and a form to enter name
+    console.log('You found all the characters. Time stop')
+  }
+  
+
   const getLevel = async (e) => {
     const {id} = e.target;
     //Close the start menu on level select
@@ -109,7 +138,7 @@ function App() {
     const charArray = [];
     const querySnapshot = await getDocs(q);
     //Map over the returned docs and add a found and id property
-    querySnapshot.forEach(doc => charArray.push({...doc.data(), found: false, id: doc.id}));
+    querySnapshot.forEach(doc => charArray.push({...doc.data(), targetbox: {}, found: false, id: doc.id}));
     //Get the download url for each characters avatar from cloud storage
     charArray.forEach(char => {
       const imageRef = ref(storage, char.imageURL);
@@ -132,8 +161,8 @@ function App() {
       />
       {showLevelSelect ? 
         <StartMenu
-          getLevel={getLevel}
-        /> : 
+          getLevel={getLevel} />
+        :  
       <Map 
         level={currentLevel}
         characters={characters}
@@ -145,7 +174,8 @@ function App() {
         handleSelect={handleSelect}
         showSnackbar={showSnackbar}
         message={message}
-      />}
+      />
+      }
     </div>
   );
 }
