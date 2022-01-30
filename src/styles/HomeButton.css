@@ -1,0 +1,9 @@
+.home-button {
+    position: fixed;
+    left: 10vw; 
+    font-size: 24px;
+}
+
+.home-button:hover {
+    cursor:pointer;
+}

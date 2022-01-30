@@ -4,12 +4,13 @@ import Header from './components/Header';
 import Map from './components/Map';
 import { useEffect, useState } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { getDocs, query, where, collection, getDoc, doc } from 'firebase/firestore';
+import { getDocs, query, where, collection, getDoc, doc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import {db, storage} from './utils/firebase';
 
 function App() {
   const [showLevelSelect, setShowLevelSelect] = useState(true);
   const [currentLevel, setCurrentLevel] = useState({name: '', imageURL: ''});
+  const [currentSession, setCurrentSession] = useState({id: ''});
   //X and Y Coordinates for center of the targeting box
   const [pageX, setPageX] = useState(0);
   const [pageY, setPageY] = useState(0);
@@ -20,6 +21,8 @@ function App() {
   const [currentCharacter, setCurrentCharacter] = useState('');
   const [characters, setCharacters] = useState([]);
   const [message, setMessage] = useState({});
+  const [timer, setTimer] = useState(0);
+  const [allFound, setAllFound] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   useEffect(() => {
@@ -63,8 +66,8 @@ function App() {
 
   useEffect(() => {
     //If every character has been found, end the game
-    if(characters.every(char => char.found === true)){
-      gameEnd();
+    if(currentLevel && characters.every(char => char.found === true)){
+      endSession();
     }
   }, [characters]) 
 
@@ -107,28 +110,44 @@ function App() {
     return overlap;
   }
   
-  const gameEnd = () => {
+  const tick = () => {
+    setTimer(timer + 1);
+  }
+
+  const startSession = async () => {
+    //Post a doc with the level and start time  
+    const docRef = await addDoc(collection(db, 'sessions'), {
+      startTime: Date.now(),
+      level: currentLevel.name
+    })  
+    setCurrentSession({id: docRef.id});
+  }
+
+  const endSession = async () => {
     //Stop the timer
+    const sessionRef = doc(db, 'sessions', currentSession.id);
+    await updateDoc((sessionRef), {endTime: Date.now()});
+    setAllFound(true);
     //Show score and a form to enter name
-    console.log('You found all the characters. Time stop')
+    const time = await (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime) / 1000)).toFixed(2);
+    console.log(`You found all the characters. Time stop ${time} seconds`);
   }
   
 
-  const getLevel = async (e) => {
+  const getLevel = (e) => {
     const {id} = e.target;
-    //Close the start menu on level select
-    getCharacters(id);
-    setShowLevelSelect(!showLevelSelect);
-    //Mock for retreiving map from the server
-    setCurrentLevel({name: id});
+    //Fetch map from the server
     getLevelImage(id);
+    getCharacters(id);
+    //Close the start menu on level select
+    setShowLevelSelect(!showLevelSelect);
   }
   
   const getLevelImage = (name) => {
     //Fetch the level map from firebase cloud storage
     const levelImage = ref(storage, `levels/${name}.png`);
     getDownloadURL(levelImage).then(url =>{
-      setCurrentLevel({...currentLevel, imageURL: url});
+      setCurrentLevel({name: name, imageURL: url});
     });
   }
 
@@ -158,6 +177,10 @@ function App() {
         showKey={showKey}
         setShowKey={setShowKey}
         characters={characters}
+        timer={timer}
+        tick={tick}
+        allFound={allFound}
+        showLevelSelect={showLevelSelect}
       />
       {showLevelSelect ? 
         <StartMenu
@@ -165,6 +188,7 @@ function App() {
         :  
       <Map 
         level={currentLevel}
+        startSession={startSession}
         characters={characters}
         updateCoords={updateCoords}
         pageX={pageX}
@@ -173,6 +197,8 @@ function App() {
         showCharacterTargets={showCharacterTargets}
         handleSelect={handleSelect}
         showSnackbar={showSnackbar}
+        tick={tick}
+        timer={timer}
         message={message}
       />
       }

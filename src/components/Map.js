@@ -3,8 +3,10 @@ import TargetBox from './TargetBox';
 import DropMenu from './DropMenu';
 import CharacterTargets from './CharacterTargets';
 import Snackbar from './Snackbar';
+import { useEffect } from 'react/cjs/react.development';
 
 const Map = (props) => {
+
 
         return(
         <div className='map'>
@@ -12,6 +14,7 @@ const Map = (props) => {
                 className='level-image' 
                 src={props.level.imageURL}
                 onClick={props.updateCoords} 
+                onLoad={props.startSession}
             />
             <Snackbar 
                 showSnackbar={props.showSnackbar}
