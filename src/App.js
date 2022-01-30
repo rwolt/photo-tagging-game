@@ -18,8 +18,9 @@ function App() {
   const [showKey, setShowKey] = useState(false);
   //Mock data for the characters array
   const [currentCharacter, setCurrentCharacter] = useState('');
-  const [characterTarget, setCharacterTarget] = useState({});
   const [characters, setCharacters] = useState([]);
+  const [message, setMessage] = useState({});
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   useEffect(() => {
     //If there a character is currently being validated, show or hide the character target divs 
@@ -34,12 +35,22 @@ function App() {
     if(showCharacterTargets === true) {
       //Get the bounding rectangle of the selection box and the character box
       const targetBox = document.querySelector('.target-box').getBoundingClientRect();
-      console.log(currentCharacter);
       const charTarget = document.getElementById(`${currentCharacter} target`).getBoundingClientRect();
-      //Check to see if the two divs overlap
-      console.log(checkOverlap(targetBox, charTarget));
+      //Check to see if the two divs overlap, if they do set the found property for the character to true
+      if(checkOverlap(targetBox, charTarget)) {
+        setCharacters(characters.map(char => {
+          return(
+            char.name === currentCharacter ? {...char, found: true} : 
+            {...char}
+          );
+        }))  
+        handleSnackbar({text: `You found ${currentCharacter}`, isCorrect: true});
+      } else {
+        handleSnackbar({text: `Try again`, isCorrect: false});
+      };
       //Set the current character to an empty string to hide the character targets
       setCurrentCharacter('');
+      setShowTargetBox(!showTargetBox);
     }
   }, [showCharacterTargets])
 
@@ -52,6 +63,18 @@ function App() {
   const handleSelect = (e) => {
     const {id} = e.currentTarget;  
     setCurrentCharacter(id);
+  }
+
+  const handleSnackbar = (message) => {
+    //Show the message for 2 seconds and then hide the snackbar
+    setMessage(message);  
+    setShowSnackbar(true);
+    setTimeout(() => {
+      setShowSnackbar(false)
+    }, 2000);
+    setTimeout(() => {
+      setMessage({});
+    }, 2400);
   }
 
   const checkOverlap = (rect1, rect2) => {
@@ -120,6 +143,8 @@ function App() {
         showTargetBox={showTargetBox}
         showCharacterTargets={showCharacterTargets}
         handleSelect={handleSelect}
+        showSnackbar={showSnackbar}
+        message={message}
       />}
     </div>
   );

@@ -8,7 +8,6 @@ const CharacterTargets = (props) => {
                     left: `${p1.x}%`,
                     width: `${p2.x - p1.x}%`,
                     height: `${p1.y - p2.y}%`,
-                    border: '2px solid hotpink'
                 }
                 return(
                     <div 

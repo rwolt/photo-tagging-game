@@ -1,5 +1,6 @@
 import Timer from './Timer';
 import Key from './Key';
+import Snackbar from './Snackbar';
 import '../styles/Header.css';
 
 const Header = (props) => {
