@@ -1,9 +1,0 @@
-.leaderboard-button {
-    position: fixed;
-    left: calc(10vw + 100px);
-    font-size: 24px;
-}
-
-.leaderboard-button:hover {
-    cursor:pointer;
-}

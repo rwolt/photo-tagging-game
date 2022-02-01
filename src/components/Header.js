@@ -1,7 +1,6 @@
 import Timer from './Timer';
 import Key from './Key';
 import HomeButton from './HomeButton';
-import LeaderBoardButton from './LeaderBoardButton';
 import Snackbar from './Snackbar';
 import '../styles/Header.css';
 
@@ -12,8 +11,7 @@ const Header = (props) => {
     return(
         <div className='header'>
             <p id='coords'>X: {props.pageX}%, Y: {props.pageY}%</p>
-            <HomeButton />
-            <LeaderBoardButton />
+            <HomeButton handleMenu={props.handleMenu} />
             {/* Show the completed time if all characters are found, else show the time */}
             {props.showLevelSelect ? '' :  
                 props.allFound ? `${minutes}:${seconds}` :

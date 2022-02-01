@@ -3,6 +3,7 @@ import TargetBox from './TargetBox';
 import DropMenu from './DropMenu';
 import CharacterTargets from './CharacterTargets';
 import Snackbar from './Snackbar';
+import NameForm from './NameForm';
 import { useEffect } from 'react/cjs/react.development';
 
 const Map = (props) => {
@@ -23,6 +24,10 @@ const Map = (props) => {
             {props.showCharacterTargets ? 
                 <CharacterTargets characters={props.characters}/> 
                 : ''
+            }
+            {props.showPopup ? 
+                <NameForm timer={props.timer}/> :
+                ''
             }
             {props.showTargetBox ? 
                 <TargetBox

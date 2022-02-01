@@ -1,8 +1,8 @@
 import '../styles/HomeButton.css';
 
-const HomeButton = () => {
+const HomeButton = (props) => {
     return(
-        <div className='home-button'>
+        <div className='home-button' onClick={props.handleMenu}>
             Menu
         </div>
     )

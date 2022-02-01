@@ -3,8 +3,9 @@ import StartMenu from './components/StartMenu';
 import Header from './components/Header';
 import Map from './components/Map';
 import { useEffect, useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { getDocs, query, where, collection, getDoc, doc, updateDoc, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getDocs, query, where, collection, getDoc, doc, updateDoc, addDoc, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import {db, storage} from './utils/firebase';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
   const [timer, setTimer] = useState(0);
   const [allFound, setAllFound] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     //If there a character is currently being validated, show or hide the character target divs 
@@ -88,6 +90,11 @@ function App() {
     }) 
     setCurrentCharacter(id);
   }
+  
+  const handleMenu = () => {
+    setShowLevelSelect(true);
+    clearSession();
+  }
 
   const handleSnackbar = (message) => {
     //Show the message for 2 seconds and then hide the snackbar
@@ -128,11 +135,24 @@ function App() {
     const sessionRef = doc(db, 'sessions', currentSession.id);
     await updateDoc((sessionRef), {endTime: Date.now()});
     setAllFound(true);
+    setShowPopup(true);
     //Show score and a form to enter name
     const time = await (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime) / 1000)).toFixed(2);
     console.log(`You found all the characters. Time stop ${time} seconds`);
   }
-  
+ 
+  const clearSession = async () => {
+    //Remove the session doc
+    const sessionRef = doc(db, 'sessions', currentSession.id);
+    await deleteDoc(sessionRef);
+    //Clear the timer, characters, and session from local state
+    setTimer(0);
+    setCharacters([]);
+    setCurrentSession('');
+    setCurrentLevel({name: '', imageURL: ''})
+    setAllFound(false);
+    setShowPopup(false);
+  }
 
   const getLevel = (e) => {
     const {id} = e.target;
@@ -171,6 +191,11 @@ function App() {
     return(
     //Show the start menu if levelSelect is true
     <div className="App">
+      {showLevelSelect ? 
+        <StartMenu
+          getLevel={getLevel} />
+        :
+      <div>
       <Header 
         pageX={pageX} 
         pageY={pageY}
@@ -181,11 +206,8 @@ function App() {
         tick={tick}
         allFound={allFound}
         showLevelSelect={showLevelSelect}
+        handleMenu={handleMenu}
       />
-      {showLevelSelect ? 
-        <StartMenu
-          getLevel={getLevel} />
-        :  
       <Map 
         level={currentLevel}
         startSession={startSession}
@@ -197,10 +219,12 @@ function App() {
         showCharacterTargets={showCharacterTargets}
         handleSelect={handleSelect}
         showSnackbar={showSnackbar}
+        showPopup={showPopup}
         tick={tick}
         timer={timer}
         message={message}
       />
+      </div>
       }
     </div>
   );
