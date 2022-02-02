@@ -12,3 +12,38 @@
     padding: 15px;
     border-radius: 5px;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.name-form p {
+    font-size: 20px;
+}
+
+input[type=text] {
+   font-size: 20px; 
+   border-radius: 4px;
+   border: none;
+   outline: none;
+   width: 70%;
+}
+
+button {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.high-scores {
+   width: 40%;
+   align-items: center;
+   font-size: 24px;
+}
+
+.score-entry {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}

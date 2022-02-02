@@ -2,8 +2,8 @@
     width: 40%;
     height: 15%;
     background-color: rgba(128, 0, 128);
-    margin: 15% auto;
-    border-radius: 4px;
+    margin: 10% auto;
+    border-radius: 6px;
     display: flex;
     justify-content: center;
 }
@@ -11,6 +11,7 @@
 .level-select {
     width: 95%;
     height: 95%;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,11 +20,13 @@
 .level-button {
     height: 30%;
     width: 100%;
-    padding: 5px;
+    padding: 10px;
     margin: 10px;
     color: white;
     display: flex;
     justify-content: center;
+    border-radius: 6px;
+    font-size: 24px;
 }
 
 .level-button:hover {

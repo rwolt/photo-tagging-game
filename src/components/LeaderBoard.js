@@ -4,11 +4,16 @@ const LeaderBoard = (props) => {
     return(
         <div className="name-form">
             <h2>High Scores</h2>
-            {props.topTen.map(entry => {
-                return(
-                    <p>{entry.name}  {entry.time} seconds </p>
-                )
-            })}
+            <div className="high-scores">
+                {props.topTen.map(entry => {
+                    return(
+                        <div className="score-entry">
+                            <span>{entry.name}</span>  
+                            <span>{entry.time} seconds</span>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }

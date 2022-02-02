@@ -148,10 +148,11 @@ function App() {
   const endSession = async () => {
     //Stop the timer
     const sessionRef = doc(db, 'sessions', currentSession.id);
+    //Update the session doc with the end time
     await updateDoc((sessionRef), {endTime: Date.now()});
     setAllFound(true);
     setShowPopup(true);
-    //Show score and a form to enter name
+    //Calculate the time using the session doc and put it into state to display on the front end
     const time = (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime) / 1000)).toFixed(2);
     setFinishTime(time); 
   }
@@ -169,16 +170,18 @@ function App() {
     setShowPopup(false);
     setShowLeaderBoard(false);
     setTopTen([]);
+    setPlayerName('');
   }
   
   const addScore = async (name) => {
+    const sessionRef = doc(db, 'sessions', currentSession.id);
     //Add high score to the database
+    const time = (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime / 1000))).toFixed(2);
     const docRef = await addDoc(collection(db, 'highscores'), {
       name: name,
       time: +finishTime,
       level: currentLevel.name
     });
-    setShowLeaderBoard(true);
   }
 
   const getLevel = (e) => {
