@@ -5,7 +5,7 @@ import Map from './components/Map';
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { getDocs, query, where, collection, getDoc, doc, updateDoc, addDoc, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import { getDocs, query, where, collection, getDoc, doc, updateDoc, addDoc, orderBy, limit, deleteDoc } from 'firebase/firestore';
 import {db, storage} from './utils/firebase';
 
 function App() {
@@ -23,10 +23,13 @@ function App() {
   const [characters, setCharacters] = useState([]);
   const [message, setMessage] = useState({});
   const [timer, setTimer] = useState(0);
+  const [finishTime, setFinishTime] = useState(9999);
   const [allFound, setAllFound] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  const [showLeaderBoard, setShowLeaderBoard] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [topTen, setTopTen] = useState([]);
   useEffect(() => {
     //If there a character is currently being validated, show or hide the character target divs 
     if(currentCharacter !== '') {
@@ -79,6 +82,11 @@ function App() {
     setShowTargetBox(!showTargetBox);
   }
   
+  const handleChange = (e) => {
+    const name = e.target.value;
+    setPlayerName(name);
+  }
+
   const handleSelect = async (e) => {
     const {id} = e.currentTarget;  
     const uniqueId = characters.filter(char => char.name === id)[0].id;
@@ -89,6 +97,13 @@ function App() {
       setCharacters(characters.map(char => char.id === doc.id ? {...char, targetbox: doc.data().targetbox} : {...char}));
     }) 
     setCurrentCharacter(id);
+  }
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addScore(playerName);
+    getTopTen(currentLevel.name);
+    setShowLeaderBoard(true);
   }
   
   const handleMenu = () => {
@@ -137,8 +152,8 @@ function App() {
     setAllFound(true);
     setShowPopup(true);
     //Show score and a form to enter name
-    const time = await (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime) / 1000)).toFixed(2);
-    console.log(`You found all the characters. Time stop ${time} seconds`);
+    const time = (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime) / 1000)).toFixed(2);
+    setFinishTime(time); 
   }
  
   const clearSession = async () => {
@@ -152,6 +167,18 @@ function App() {
     setCurrentLevel({name: '', imageURL: ''})
     setAllFound(false);
     setShowPopup(false);
+    setShowLeaderBoard(false);
+    setTopTen([]);
+  }
+  
+  const addScore = async (name) => {
+    //Add high score to the database
+    const docRef = await addDoc(collection(db, 'highscores'), {
+      name: name,
+      time: +finishTime,
+      level: currentLevel.name
+    });
+    setShowLeaderBoard(true);
   }
 
   const getLevel = (e) => {
@@ -187,6 +214,15 @@ function App() {
     setCharacters(charArray);
     });
   }
+  
+  const getTopTen = async (level) => {
+    //Fetch the top ten highscores for the level
+    const q = query(collection(db, 'highscores'), where('level', '==', level), orderBy('time', 'asc'), limit(10));
+    const querySnapshot = await getDocs(q);
+    const scores = []
+    querySnapshot.forEach(doc => scores.push(doc.data()));
+    setTopTen(scores);
+  }
  
     return(
     //Show the start menu if levelSelect is true
@@ -218,11 +254,18 @@ function App() {
         showTargetBox={showTargetBox}
         showCharacterTargets={showCharacterTargets}
         handleSelect={handleSelect}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit} 
         showSnackbar={showSnackbar}
         showPopup={showPopup}
+        showLeaderBoard={showLeaderBoard}
         tick={tick}
         timer={timer}
+        finishTime={finishTime}
         message={message}
+        allFound={allFound}
+        playerName={playerName}
+        topTen={topTen}
       />
       </div>
       }

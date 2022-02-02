@@ -3,6 +3,7 @@ import TargetBox from './TargetBox';
 import DropMenu from './DropMenu';
 import CharacterTargets from './CharacterTargets';
 import Snackbar from './Snackbar';
+import LeaderBoard from './LeaderBoard';
 import NameForm from './NameForm';
 import { useEffect } from 'react/cjs/react.development';
 
@@ -25,17 +26,27 @@ const Map = (props) => {
                 <CharacterTargets characters={props.characters}/> 
                 : ''
             }
-            {props.showPopup ? 
-                <NameForm timer={props.timer}/> :
-                ''
+            {!props.showLeaderBoard && props.showPopup ? 
+                <NameForm 
+                    finishTime={props.finishTime} 
+                    playerName={props.playerName} 
+                    showLeaderBoard={props.showLeaderBoard} 
+                    handleChange={props.handleChange}
+                    handleSubmit={props.handleSubmit}
+                /> : ''
             }
-            {props.showTargetBox ? 
+            {props.showLeaderBoard && props.showPopup ?
+                <LeaderBoard 
+                    topTen={props.topTen}    
+                /> : ''
+            }    
+            {props.showTargetBox && !props.allFound? 
                 <TargetBox
                     pageX={props.pageX}
                     pageY={props.pageY}
                 /> : ''
             }
-            {props.showTargetBox ? 
+            {props.showTargetBox && !props.allFound ? 
                 <DropMenu   
                     characters={props.characters}
                     handleSelect={props.handleSelect}
