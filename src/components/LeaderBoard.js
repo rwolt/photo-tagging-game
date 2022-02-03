@@ -9,7 +9,7 @@ const LeaderBoard = (props) => {
                     return(
                         <div className="score-entry">
                             <span>{entry.name}</span>  
-                            <span>{entry.time} seconds</span>
+                            <span>{entry.time} sec</span>
                         </div>
                     )
                 })}

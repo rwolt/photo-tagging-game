@@ -2,6 +2,7 @@ import '../styles/Map.css';
 import TargetBox from './TargetBox';
 import DropMenu from './DropMenu';
 import CharacterTargets from './CharacterTargets';
+import Tags from './Tags';
 import Snackbar from './Snackbar';
 import LeaderBoard from './LeaderBoard';
 import NameForm from './NameForm';
@@ -26,6 +27,7 @@ const Map = (props) => {
                 <CharacterTargets characters={props.characters}/> 
                 : ''
             }
+            <Tags characters={props.characters} />
             {!props.showLeaderBoard && props.showPopup ? 
                 <NameForm 
                     finishTime={props.finishTime} 

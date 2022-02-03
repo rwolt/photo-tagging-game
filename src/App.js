@@ -3,7 +3,6 @@ import StartMenu from './components/StartMenu';
 import Header from './components/Header';
 import Map from './components/Map';
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { getDocs, query, where, collection, getDoc, doc, updateDoc, addDoc, orderBy, limit, deleteDoc } from 'firebase/firestore';
 import {db, storage} from './utils/firebase';
@@ -48,7 +47,7 @@ function App() {
       if(checkOverlap(targetBox, charTarget)) {
         setCharacters(characters.map(char => {
           return(
-            char.name === currentCharacter ? {...char, found: true, targetbox: {}} : 
+            char.name === currentCharacter ? {...char, found: true, pageX: pageX, pageY: pageY, targetbox: {}} : 
             {...char}
           );
         }))  
@@ -89,6 +88,7 @@ function App() {
 
   const handleSelect = async (e) => {
     const {id} = e.currentTarget;  
+    //Get the document id
     const uniqueId = characters.filter(char => char.name === id)[0].id;
     //Get the coordinates of the character from firebase
     const characterRef = doc(collection(db, 'characters'), uniqueId);
@@ -102,7 +102,6 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addScore(playerName);
-    getTopTen(currentLevel.name);
     setShowLeaderBoard(true);
   }
   
@@ -121,7 +120,7 @@ function App() {
     //Delay change of message so style remains during animation
     setTimeout(() => {
       setMessage({});
-    }, 2400);
+    }, 2500);
   }
 
   const checkOverlap = (rect1, rect2) => {
@@ -171,17 +170,20 @@ function App() {
     setShowLeaderBoard(false);
     setTopTen([]);
     setPlayerName('');
+    setFinishTime(9999);
+    setShowTargetBox(false);
   }
   
   const addScore = async (name) => {
     const sessionRef = doc(db, 'sessions', currentSession.id);
     //Add high score to the database
-    const time = (await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime / 1000))).toFixed(2);
-    const docRef = await addDoc(collection(db, 'highscores'), {
+    const time = +(await getDoc(sessionRef).then(doc => (doc.data().endTime - doc.data().startTime) / 1000)).toFixed(2);
+    await addDoc(collection(db, 'highscores'), {
       name: name,
-      time: +finishTime,
+      time: time,
       level: currentLevel.name
     });
+    getTopTen(currentLevel.name);
   }
 
   const getLevel = (e) => {
