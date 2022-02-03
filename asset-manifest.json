@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/waldo/static/css/main.f06f392a.css",
+    "main.js": "/waldo/static/js/main.e583d186.js",
+    "index.html": "/waldo/index.html",
+    "main.f06f392a.css.map": "/waldo/static/css/main.f06f392a.css.map",
+    "main.e583d186.js.map": "/waldo/static/js/main.e583d186.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f06f392a.css",
+    "static/js/main.e583d186.js"
+  ]
+}
