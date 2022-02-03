@@ -1,9 +1,9 @@
-# Waldo - A Photo Tagging Game
+# Pixel Hunt - A Photo Tagging Game
 
-Waldo is a search and find game. Users compete to tag a list of characters in the shortest time possible. 
+Pixel hunt is a search and find game. Users compete to tag a list of characters in the shortest time possible. 
 
 ## Technologies Used
 * React
-* Firebase 
-* Firestore
+* Firestore  
+* Firebase Cloud Storage
 
