@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/waldo/static/css/main.f06f392a.css",
-    "main.js": "/waldo/static/js/main.e583d186.js",
-    "index.html": "/waldo/index.html",
-    "main.f06f392a.css.map": "/waldo/static/css/main.f06f392a.css.map",
-    "main.e583d186.js.map": "/waldo/static/js/main.e583d186.js.map"
+    "main.css": "/photo-tagging-game/static/css/main.f06f392a.css",
+    "main.js": "/photo-tagging-game/static/js/main.e583d186.js",
+    "index.html": "/photo-tagging-game/index.html",
+    "main.f06f392a.css.map": "/photo-tagging-game/static/css/main.f06f392a.css.map",
+    "main.e583d186.js.map": "/photo-tagging-game/static/js/main.e583d186.js.map"
   },
   "entrypoints": [
     "static/css/main.f06f392a.css",
